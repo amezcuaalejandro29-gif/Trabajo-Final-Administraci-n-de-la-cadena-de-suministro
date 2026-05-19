@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard SCM — Papelera del Centro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #f59e0b;
+    --accent2: #3b82f6;
+    --accent3: #10b981;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --ok: #10b981;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --subtle: #94a3b8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    height: 56px;
+    gap: 2rem;
+  }
+
+  .nav-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--accent);
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+
+  .nav-brand span { color: var(--text); }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 16px;
+    height: 56px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { color: var(--subtle); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    padding: 80px 2rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TYPOGRAPHY */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .col-span-2 { grid-column: span 2; }
+  .col-span-3 { grid-column: span 3; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card-dark {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  /* KPI CARDS */
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .kpi-delta {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .up { color: var(--ok); }
+  .down { color: var(--danger); }
+  .warn-color { color: var(--warn); }
+
+  .kpi-accent { border-top: 3px solid var(--accent); }
+  .kpi-blue { border-top: 3px solid var(--accent2); }
+  .kpi-green { border-top: 3px solid var(--accent3); }
+  .kpi-red { border-top: 3px solid var(--danger); }
+
+  /* CHART CONTAINERS */
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  /* SEMÁFORO */
+  .semaforo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .semaforo-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .semaforo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .semaforo-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .dot-red { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+  .dot-yellow { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+  .dot-green { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+
+  .semaforo-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .semaforo-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  /* PROGRESS BARS */
+  .progress-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--subtle);
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    color: var(--subtle);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .td-main { color: var(--text); font-weight: 500; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-yellow { background: rgba(245,158,11,0.15); color: var(--warn); }
+  .badge-green { background: rgba(16,185,129,0.15); color: var(--ok); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--accent2); }
+
+  /* PORTADA */
+  .hero {
+    background: linear-gradient(135deg, #111827 0%, #0f172a 50%, #0a0e1a 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(245,158,11,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 99px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .hero-title span { color: var(--accent); }
+
+  .hero-question {
+    font-size: 16px;
+    color: var(--subtle);
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* VERDICT */
+  .verdict {
+    background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.05));
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+  }
+
+  .verdict-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--danger);
+    margin-bottom: 8px;
+  }
+
+  .verdict-ok {
+    background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.05));
+    border-color: rgba(16,185,129,0.2);
+  }
+
+  .verdict-ok .verdict-title { color: var(--ok); }
+
+  .verdict-text {
+    font-size: 13px;
+    color: var(--subtle);
+    line-height: 1.7;
+  }
+
+  /* TRADEOFF TABLE */
+  .tradeoff {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .tradeoff-col {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .tradeoff-header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .tradeoff-item {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .check { color: var(--ok); }
+  .cross { color: var(--danger); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .col-span-2, .col-span-3 { grid-column: span 1; }
+    .semaforo-grid { grid-template-columns: 1fr 1fr; }
+    .hero { padding: 28px; }
+    .hero-title { font-size: 28px; }
+    .tradeoff { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ NAV -->
+<nav>
+  <div class="nav-brand">PDC <span>/ SCM Dashboard</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('portada')">Contexto</button>
+    <button class="tab-btn" onclick="showTab('inventarios')">Inventarios</button>
+    <button class="tab-btn" onclick="showTab('red')">Red de Distribución</button>
+    <button class="tab-btn" onclick="showTab('transporte')">Transporte & 3PL</button>
+    <button class="tab-btn" onclick="showTab('semaforo')">Semáforo SCM</button>
+    <button class="tab-btn" onclick="showTab('recomendacion')">Recomendación</button>
+  </div>
+  <div class="nav-badge">NEG008 · UP Guadalajara · 2026</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ PORTADA -->
+<section id="portada" class="section active">
+
+  <div class="hero">
+    <div class="hero-tag">Caso de Estudio · SCM</div>
+    <div class="hero-title">Papelera del Centro<br><span>¿Lista para exportar?</span></div>
+    <div class="hero-question">
+      Un distribuidor guatemalteco toca la puerta. La dirección general quiere decir que sí.<br>
+      Pero, ¿puede la cadena de suministro actual soportar ese crecimiento?
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="meta-label">Giro</span>
+        <span class="meta-value">Comercializadora papelería</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="meta-label">Sede</span>
+        <span class="meta-value">Guadalajara, México</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="meta-label">Mercado objetivo</span>
+        <span class="meta-value">Guatemala & Costa Rica</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="meta-label">Facturación anual</span>
+        <span class="meta-value">$45.2 M MXN</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="meta-label">Años de operación</span>
+        <span class="meta-value">12 años</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>La empresa hoy</h3>
+      <div class="progress-row">
+        <div class="progress-label"><span>Clientes institucionales</span><span>58%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:58%;background:var(--accent2);"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Papelerías regionales</span><span>31%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:31%;background:var(--accent);"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Escuelas privadas</span><span>11%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:11%;background:var(--accent3);"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+        Proveedores principales: <strong style="color:var(--text);">2 en China</strong> (consumibles, archiveros) + <strong style="color:var(--text);">1 en Monterrey</strong> (material escolar). Lead time China: <strong style="color:var(--warn);">45–60 días</strong>. Opera con ERP básico y planeación mayormente en Excel.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>La oportunidad</h3>
+      <div style="font-size:13px;color:var(--subtle);line-height:1.8;margin-bottom:16px;">
+        Distribuidora guatemalteca <strong style="color:var(--text);">OfficeGT</strong> propone exclusividad regional para México → Guatemala y Costa Rica. Volumen estimado: <strong style="color:var(--accent);">+$8.4 M MXN</strong> en el primer año, con crecimiento proyectado del 18% anual.
+      </div>
+      <table>
+        <tr><th>Variable</th><th>Valor estimado</th></tr>
+        <tr><td class="td-main">Volumen inicial exportación</td><td>$8.4 M MXN / año</td></tr>
+        <tr><td class="td-main">Crecimiento proyectado</td><td class="up">+18% anual</td></tr>
+        <tr><td class="td-main">Margen bruto papelería</td><td>22%</td></tr>
+        <tr><td class="td-main">Costo logístico estimado (sin optimizar)</td><td class="down">9.4% sobre ventas</td></tr>
+        <tr><td class="td-main">Margen neto proyectado si exporta HOY</td><td class="down">≈ 7.8%</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="kpi kpi-red">
+      <div class="kpi-label">Stockouts último año</div>
+      <div class="kpi-value" style="color:var(--danger);">34</div>
+      <div class="kpi-delta down">▲ 41% vs año anterior</div>
+    </div>
+    <div class="kpi kpi-accent">
+      <div class="kpi-label">Inv. inmovilizado (sin rotación)</div>
+      <div class="kpi-value" style="color:var(--accent);">$2.1 M</div>
+      <div class="kpi-delta warn-color">MXN en productos lentos</div>
+    </div>
+    <div class="kpi kpi-blue">
+      <div class="kpi-label">Rutas de reparto propias</div>
+      <div class="kpi-value" style="color:var(--accent2);">3</div>
+      <div class="kpi-delta" style="color:var(--muted);">Cobertura: Solo Jalisco & Nayarit</div>
+    </div>
+    <div class="kpi kpi-green">
+      <div class="kpi-label">Clientes activos</div>
+      <div class="kpi-value" style="color:var(--accent3);">187</div>
+      <div class="kpi-delta up">▲ 12% vs año anterior</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════ INVENTARIOS -->
+<section id="inventarios" class="section">
+
+  <div class="section-title">Diagnóstico de Inventarios</div>
+  <div class="section-sub">Análisis de inventario de ciclo, seguridad y variabilidad predecible — el problema raíz antes de exportar</div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>Demanda mensual vs. Inventario disponible (2025)</h3>
+      <div class="chart-wrap" style="height:240px;">
+        <canvas id="chartDemandaInventario"></canvas>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+        ⚠ Los stockouts coinciden exactamente con picos de demanda predecible (temporada escolar ago–sep, cierre fiscal dic).
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Composición del inventario actual</h3>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="chartComposicion"></canvas>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+        El <strong style="color:var(--danger);">38%</strong> del inventario tiene rotación &gt; 90 días. Capital inmovilizado que podría financiar inventario de seguridad en productos de alta demanda.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:16px;">
+    <div class="card col-span-2">
+      <h3>Inventario por SKU — Ciclo vs. Seguridad vs. Sobrestock</h3>
+      <table>
+        <tr>
+          <th>Producto</th>
+          <th>Inv. actual (unid.)</th>
+          <th>Inv. ciclo ideal</th>
+          <th>Inv. seguridad recom.</th>
+          <th>Estado</th>
+        </tr>
+        <tr>
+          <td class="td-main">Carpetas argolladas A4</td>
+          <td>1,240</td>
+          <td>800</td>
+          <td>320</td>
+          <td><span class="badge badge-yellow">Sobrestock</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Resmas papel bond 75g</td>
+          <td>180</td>
+          <td>600</td>
+          <td>240</td>
+          <td><span class="badge badge-red">Riesgo stockout</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Tóner HP negro (comp.)</td>
+          <td>44</td>
+          <td>120</td>
+          <td>60</td>
+          <td><span class="badge badge-red">Crítico</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Archiveros colgantes</td>
+          <td>2,100</td>
+          <td>400</td>
+          <td>160</td>
+          <td><span class="badge badge-yellow">Sobrestock severo</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Bolígrafos caja x50</td>
+          <td>620</td>
+          <td>500</td>
+          <td>200</td>
+          <td><span class="badge badge-green">Óptimo</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Blocks cuadriculados</td>
+          <td>90</td>
+          <td>300</td>
+          <td>120</td>
+          <td><span class="badge badge-red">Riesgo stockout</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Separadores plástico</td>
+          <td>3,800</td>
+          <td>700</td>
+          <td>280</td>
+          <td><span class="badge badge-yellow">Sobrestock severo</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Variabilidad predecible no gestionada</h3>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        La empresa colapsa en tres momentos que <strong style="color:var(--text);">no son sorpresa</strong>:
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:12px;">
+          <div style="font-size:11px;color:var(--danger);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Agosto — Septiembre</div>
+          <div style="font-size:12px;color:var(--muted);">Temporada escolar. Demanda +74% sobre promedio. Sin inventario de seguridad adicional.</div>
+        </div>
+        <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:12px;">
+          <div style="font-size:11px;color:var(--warn);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Noviembre — Diciembre</div>
+          <div style="font-size:12px;color:var(--muted);">Cierre fiscal de clientes institucionales. Pedidos concentrados en 2 semanas.</div>
+        </div>
+        <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:12px;">
+          <div style="font-size:11px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Febrero</div>
+          <div style="font-size:12px;color:var(--muted);">Inicio semestre escolar. Segundo pico. Recuperación del stock aún no completa.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-title">⚠ Diagnóstico: El problema no es la exportación — es la planeación</div>
+    <div class="verdict-text">
+      Papelera del Centro tiene simultáneamente <strong>sobrestock en productos de baja rotación</strong> y <strong>stockouts recurrentes en productos de alta demanda</strong>. Esto indica que no distingue entre inventario de ciclo (compras en lote por economía de escala) e inventario de seguridad (colchón ante variabilidad). El lead time de 45–60 días de China agrava el problema: si no anticipa la temporada escolar con 2 meses de antelación, no hay corrección posible. Exportar sin resolver esto primero significa replicar el caos a escala internacional.
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ RED DE DISTRIBUCIÓN -->
+<section id="red" class="section">
+
+  <div class="section-title">Red de Distribución</div>
+  <div class="section-sub">Diseño de red actual vs. red propuesta para soportar exportación a Centroamérica</div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>Red actual — Cobertura y nodos</h3>
+      <div style="background:var(--surface2);border-radius:8px;padding:16px;margin-bottom:14px;font-size:12px;line-height:1.8;color:var(--muted);">
+        <strong style="color:var(--text);">Nodo único:</strong> Almacén central Guadalajara (2,400 m²)<br>
+        <strong style="color:var(--text);">Cobertura:</strong> Jalisco, Nayarit, Colima (70% clientes), Michoacán (30% parcial)<br>
+        <strong style="color:var(--text);">Rutas propias:</strong> 3 camionetas de 3.5 ton<br>
+        <strong style="color:var(--text);">Frecuencia:</strong> Entrega semanal por zona<br>
+        <strong style="color:var(--text);">Exportación actual:</strong> Ninguna
+      </div>
+      <h3 style="margin-top:4px;">Análisis de capacidad</h3>
+      <div class="progress-row">
+        <div class="progress-label"><span>Utilización almacén</span><span style="color:var(--warn);">87%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:87%;background:var(--warn);"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Utilización flota</span><span style="color:var(--danger);">94%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:94%;background:var(--danger);"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Pedidos entregados a tiempo</span><span style="color:var(--warn);">78%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:78%;background:var(--accent2);"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Capacidad disponible para exportación</span><span style="color:var(--danger);">6%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:6%;background:var(--danger);"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Opciones de diseño de red para exportación</h3>
+      <table>
+        <tr>
+          <th>Opción</th>
+          <th>Descripción</th>
+          <th>Costo est.</th>
+          <th>Riesgo</th>
+        </tr>
+        <tr>
+          <td class="td-main">A — Exportar directo</td>
+          <td style="color:var(--muted);font-size:12px;">Desde GDL, sin nodo intermedio</td>
+          <td>Bajo inicial</td>
+          <td><span class="badge badge-red">Alto</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">B — Consolidador en CDMX</td>
+          <td style="color:var(--muted);font-size:12px;">Punto de consolidación antes de cruzar frontera</td>
+          <td>Medio</td>
+          <td><span class="badge badge-yellow">Medio</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">C — Cross-dock Guatemala</td>
+          <td style="color:var(--muted);font-size:12px;">Nodo local operado por OfficeGT</td>
+          <td>Bajo</td>
+          <td><span class="badge badge-green">Bajo</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">D — 3PL especializado</td>
+          <td style="color:var(--muted);font-size:12px;">Tercerizar toda la operación de exportación</td>
+          <td>Medio-alto</td>
+          <td><span class="badge badge-green">Bajo</span></td>
+        </tr>
+      </table>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+        <strong style="color:var(--accent);">Opción recomendada: C + D combinadas.</strong> Usar el cross-dock de OfficeGT como nodo local en Guatemala mientras se contrata un 3PL para el tramo México → frontera. Esto minimiza inversión de capital y transfiere riesgo operativo a especialistas mientras la empresa resuelve sus problemas de inventario internos.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Costo logístico total — Comparativa de opciones de red</h3>
+    <div class="chart-wrap" style="height:220px;">
+      <canvas id="chartRedComparativa"></canvas>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+      * Costo logístico total = Transporte + Inventario en tránsito + Costo de ruptura estimado. La Opción C+D es superior al minimizar el inventario en tránsito aprovechando el nodo local.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid-2">
+    <div class="card-dark">
+      <h3>Trade-off central del diseño de red</h3>
+      <div style="font-size:13px;color:var(--subtle);margin-bottom:12px;font-style:italic;">
+        "Acercarse al cliente sube el servicio pero sube los costos. Centralizar baja costos pero aumenta tiempos."
+      </div>
+      <div class="tradeoff">
+        <div class="tradeoff-col">
+          <div class="tradeoff-header" style="color:var(--ok);">✓ Nodo en Guatemala (C)</div>
+          <div class="tradeoff-item"><span class="check">+</span> Entrega local rápida (2–3 días)</div>
+          <div class="tradeoff-item"><span class="check">+</span> OfficeGT absorbe last mile</div>
+          <div class="tradeoff-item"><span class="check">+</span> Sin inversión en infraestructura</div>
+          <div class="tradeoff-item"><span class="cross">−</span> Dependencia del socio local</div>
+          <div class="tradeoff-item"><span class="cross">−</span> Menor control sobre la operación</div>
+        </div>
+        <div class="tradeoff-col">
+          <div class="tradeoff-header" style="color:var(--danger);">✗ Exportar directo (A)</div>
+          <div class="tradeoff-item"><span class="check">+</span> Control total de la operación</div>
+          <div class="tradeoff-item"><span class="cross">−</span> Tiempos de entrega: 8–12 días</div>
+          <div class="tradeoff-item"><span class="cross">−</span> Alta inversión en trámites aduanales</div>
+          <div class="tradeoff-item"><span class="cross">−</span> Flota actual al 94% — sin capacidad</div>
+          <div class="tradeoff-item"><span class="cross">−</span> Riesgo regulatorio sin experiencia</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-dark">
+      <h3>Ajuste estratégico — ¿La red cumple la promesa?</h3>
+      <div style="font-size:13px;color:var(--subtle);line-height:1.8;margin-bottom:12px;">
+        La promesa al cliente guatemalteco es <strong style="color:var(--text);">disponibilidad constante y entrega confiable</strong>. La red actual no puede cumplir esa promesa ni localmente: 22% de pedidos se entregan tarde en Jalisco.
+      </div>
+      <div style="background:rgba(239,68,68,0.08);border-left:3px solid var(--danger);padding:12px;border-radius:0 6px 6px 0;font-size:12px;color:var(--muted);">
+        Una empresa que promete servicio pero diseña su red solo para reducir costos, tarde o temprano se rompe. Papelera del Centro está en ese punto de quiebre: su red ya no coincide con su estrategia de crecimiento.
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════ TRANSPORTE & 3PL -->
+<section id="transporte" class="section">
+
+  <div class="section-title">Transporte & Decisión de Outsourcing</div>
+  <div class="section-sub">Comparativa de modos de transporte internacional y análisis de tercerización (3PL) para la ruta México → Centroamérica</div>
+
+  <div class="grid-3" style="margin-bottom:16px;">
+    <div class="kpi kpi-blue">
+      <div class="kpi-label">Costo transporte terrestre (GDL → Guatemala)</div>
+      <div class="kpi-value" style="color:var(--accent2);">$4.20</div>
+      <div class="kpi-delta" style="color:var(--muted);">USD / kg · 6–8 días tránsito</div>
+    </div>
+    <div class="kpi kpi-accent">
+      <div class="kpi-label">Costo transporte aéreo (MEX → GUA)</div>
+      <div class="kpi-value" style="color:var(--accent);">$9.80</div>
+      <div class="kpi-delta" style="color:var(--muted);">USD / kg · 1–2 días tránsito</div>
+    </div>
+    <div class="kpi kpi-green">
+      <div class="kpi-label">Costo con 3PL (terrestre + consolidado)</div>
+      <div class="kpi-value" style="color:var(--accent3);">$3.60</div>
+      <div class="kpi-delta up">USD / kg · 7–9 días · menor riesgo</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>Costo logístico total por opción ($/envío estándar 500 kg)</h3>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="chartTransporte"></canvas>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+        Costo logístico total incluye: flete + inventario en tránsito + seguro + gestión aduanal + costo de ruptura estimado.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Decisión de outsourcing — Análisis make vs. buy</h3>
+      <table>
+        <tr>
+          <th>Criterio</th>
+          <th>Operación propia</th>
+          <th>3PL especializado</th>
+        </tr>
+        <tr>
+          <td class="td-main">Experiencia aduanal</td>
+          <td><span class="badge badge-red">Ninguna</span></td>
+          <td><span class="badge badge-green">Alta</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Inversión inicial</td>
+          <td><span class="badge badge-red">Alta ($800K+)</span></td>
+          <td><span class="badge badge-green">Mínima</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Flexibilidad de volumen</td>
+          <td><span class="badge badge-red">Baja</span></td>
+          <td><span class="badge badge-green">Alta</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Control operativo</td>
+          <td><span class="badge badge-green">Total</span></td>
+          <td><span class="badge badge-yellow">Parcial</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Riesgo regulatorio</td>
+          <td><span class="badge badge-red">Muy alto</span></td>
+          <td><span class="badge badge-green">Transferido</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Tiempo de implementación</td>
+          <td><span class="badge badge-red">6–12 meses</span></td>
+          <td><span class="badge badge-green">4–8 semanas</span></td>
+        </tr>
+        <tr>
+          <td class="td-main">Costo unitario (largo plazo)</td>
+          <td><span class="badge badge-green">Potencialmente menor</span></td>
+          <td><span class="badge badge-yellow">Margen del 3PL</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>Evolución del costo logístico total según volumen de exportación</h3>
+    <div class="chart-wrap" style="height:200px;">
+      <canvas id="chartVolumen"></canvas>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+      La operación propia se vuelve competitiva solo a partir de ~$22 M MXN de exportación anual — más del doble del volumen proyectado para el año 1.
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="verdict">
+      <div class="verdict-title">⚠ El error más caro: elegir el transporte más barato</div>
+      <div class="verdict-text">
+        El transporte aéreo parece descartable por costo (9.80 vs 4.20 USD/kg). Pero si hay un stockout en Guatemala por error de planeación, el costo de ruptura — perder al cliente OfficeGT — supera con creces el diferencial del flete. La decisión correcta no es el transporte más barato: es el que optimiza el sistema completo.
+      </div>
+    </div>
+    <div class="verdict verdict-ok">
+      <div class="verdict-title">✓ Recomendación de transporte</div>
+      <div class="verdict-text">
+        <strong>Modo base:</strong> Terrestre con 3PL (Ej. DHL Supply Chain, DB Schenker México) para envíos regulares semanales consolidados.<br><br>
+        <strong>Modo contingencia:</strong> Aéreo para reposición urgente en caso de quiebre de stock (max. 15% del volumen), hasta que la planeación de inventarios esté consolidada.<br><br>
+        Revisar en 12 meses si el volumen justifica operación propia.
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════════════════════════ SEMÁFORO -->
+<section id="semaforo" class="section">
+
+  <div class="section-title">Semáforo de Preparación SCM</div>
+  <div class="section-sub">Evaluación por dimensión de la cadena — ¿En qué está lista Papelera del Centro para exportar?</div>
+
+  <div class="semaforo-grid" style="margin-bottom:24px;">
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Gestión de Inventarios</div>
+        <div class="dot dot-red"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--danger);">2 / 10</div>
+      <div class="semaforo-desc">Sobrestock y stockouts simultáneos. Sin distinción entre inventario de ciclo y seguridad. Lead time de 60 días sin buffer planificado.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Planeación de Demanda</div>
+        <div class="dot dot-red"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--danger);">3 / 10</div>
+      <div class="semaforo-desc">Sin modelo de pronóstico formal. Variabilidad predecible (temporada escolar, cierre fiscal) no se anticipa en la planeación operativa.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Diseño de Red</div>
+        <div class="dot dot-red"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--danger);">2 / 10</div>
+      <div class="semaforo-desc">Nodo único saturado (87% almacén, 94% flota). Sin capacidad para absorber volumen de exportación. Cobertura limitada a dos estados.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Capacidad de Transporte Int.</div>
+        <div class="dot dot-yellow"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--warn);">4 / 10</div>
+      <div class="semaforo-desc">Sin experiencia en exportación ni gestión aduanal. Puede resolverse con un 3PL especializado en 4–8 semanas. El modo existe; falta el operador.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Relación con Proveedores</div>
+        <div class="dot dot-yellow"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--warn);">5 / 10</div>
+      <div class="semaforo-desc">Dos proveedores en China con lead time largo pero relación estable. Riesgo de concentración. Para exportación se necesita mayor volumen de compra negociado.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Tecnología & Visibilidad SCM</div>
+        <div class="dot dot-yellow"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--warn);">4 / 10</div>
+      <div class="semaforo-desc">ERP básico instalado pero subutilizado. Planeación sigue siendo en Excel. Sin trazabilidad en tiempo real. Migración a módulo de inventarios urgente.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Gestión de Riesgo</div>
+        <div class="dot dot-red"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--danger);">2 / 10</div>
+      <div class="semaforo-desc">Sin póliza de transporte internacional. Sin plan de contingencia ante quiebres de stock. Sin análisis de riesgo geopolítico (Guatemala: estabilidad moderada).</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Nivel de Servicio al Cliente</div>
+        <div class="dot dot-yellow"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--warn);">5 / 10</div>
+      <div class="semaforo-desc">78% de pedidos entregados a tiempo localmente. Para un cliente de exportación, el estándar mínimo aceptable es 92%. Brecha significativa a cerrar.</div>
+    </div>
+
+    <div class="semaforo-item">
+      <div class="semaforo-header">
+        <div class="semaforo-label">Sostenibilidad operativa</div>
+        <div class="dot dot-yellow"></div>
+      </div>
+      <div class="semaforo-score" style="color:var(--warn);">5 / 10</div>
+      <div class="semaforo-desc">Sin métricas de huella de carbono. El socio guatemalteco podría exigirlo en el futuro. Oportunidad de diferenciación temprana frente a competidores chinos.</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <h3>Índice global de preparación para exportación</h3>
+    <div class="chart-wrap" style="height:220px;">
+      <canvas id="chartRadar"></canvas>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════ RECOMENDACIÓN -->
+<section id="recomendacion" class="section">
+
+  <div class="section-title">Recomendación Ejecutiva Final</div>
+  <div class="section-sub">Síntesis del diagnóstico y hoja de ruta para la dirección general de Papelera del Centro</div>
+
+  <div class="hero" style="margin-bottom:20px;">
+    <div class="hero-tag">Veredicto ejecutivo</div>
+    <div class="hero-title" style="font-size:30px;">No exportar todavía — <span>pero prepararse ahora.</span></div>
+    <div class="hero-question" style="font-size:14px;">
+      La oportunidad con OfficeGT es real y no debe descartarse. El problema es que exportar hoy, con la cadena en su estado actual, garantiza el fracaso de la relación en el primer ciclo de alta demanda. La recomendación es negociar un inicio diferido de 6 meses con el socio guatemalteco y usar ese tiempo para resolver los problemas estructurales que harían inviable cualquier expansión.
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>Plan de acción — Fase 1 (0–6 meses): Orden interno</h3>
+      <table>
+        <tr><th>#</th><th>Acción</th><th>Impacto</th><th>Urgencia</th></tr>
+        <tr>
+          <td style="color:var(--accent);font-weight:700;">01</td>
+          <td class="td-main">Implementar modelo de inventario de seguridad para top 10 SKUs</td>
+          <td>Elimina stockouts críticos</td>
+          <td><span class="badge badge-red">Inmediata</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent);font-weight:700;">02</td>
+          <td class="td-main">Liquidar sobrestock de baja rotación (carpetas, archiveros, separadores)</td>
+          <td>Libera $1.4 M MXN de capital</td>
+          <td><span class="badge badge-red">Inmediata</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent);font-weight:700;">03</td>
+          <td class="td-main">Activar módulo de planeación de demanda en ERP</td>
+          <td>Anticipa picos predecibles</td>
+          <td><span class="badge badge-yellow">Mes 1–2</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent);font-weight:700;">04</td>
+          <td class="td-main">Contratar 3PL especializado en exportación a CA</td>
+          <td>Elimina brecha aduanal</td>
+          <td><span class="badge badge-yellow">Mes 2–3</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent);font-weight:700;">05</td>
+          <td class="td-main">Negociar volumen con proveedores chinos para reducir lead time a 35 días</td>
+          <td>Reduce riesgo de ruptura</td>
+          <td><span class="badge badge-blue">Mes 3–4</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Plan de acción — Fase 2 (6–18 meses): Exportación</h3>
+      <table>
+        <tr><th>#</th><th>Acción</th><th>Impacto</th><th>Plazo</th></tr>
+        <tr>
+          <td style="color:var(--accent3);font-weight:700;">06</td>
+          <td class="td-main">Primer envío piloto a OfficeGT (contenedor parcial)</td>
+          <td>Validación operativa real</td>
+          <td><span class="badge badge-blue">Mes 6</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent3);font-weight:700;">07</td>
+          <td class="td-main">Establecer punto de reorden diferenciado para mix de exportación</td>
+          <td>Inventario dedicado CA</td>
+          <td><span class="badge badge-blue">Mes 7</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent3);font-weight:700;">08</td>
+          <td class="td-main">Contratar seguro de transporte internacional (cargo)</td>
+          <td>Cubre riesgo físico y ruptura</td>
+          <td><span class="badge badge-blue">Mes 6</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent3);font-weight:700;">09</td>
+          <td class="td-main">Expandir a Costa Rica si Guatemala logra &gt;92% nivel de servicio</td>
+          <td>Segundo mercado CA</td>
+          <td><span class="badge badge-green">Mes 12–15</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent3);font-weight:700;">10</td>
+          <td class="td-main">Evaluar nodo de distribución propio en Guatemala</td>
+          <td>Solo si volumen &gt; $22 M MXN</td>
+          <td><span class="badge badge-green">Mes 18+</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <h3>Proyección financiera con la hoja de ruta propuesta</h3>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="chartProyeccion"></canvas>
+      </div>
+    </div>
+    <div class="card-dark">
+      <h3>Riesgos y trade-offs de la recomendación</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+        <div>
+          <div style="font-size:11px;color:var(--danger);font-weight:600;text-transform:uppercase;margin-bottom:4px;">Riesgo principal</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;">OfficeGT podría buscar otro proveedor durante los 6 meses de preparación. Mitigación: ofrecer acuerdo de intención firmado con fecha de inicio garantizada.</div>
+        </div>
+        <div class="divider" style="margin:8px 0;"></div>
+        <div>
+          <div style="font-size:11px;color:var(--warn);font-weight:600;text-transform:uppercase;margin-bottom:4px;">Trade-off central</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;">Se sacrifica velocidad de entrada al mercado por solidez operativa. La alternativa — exportar hoy sin resolver los problemas — tiene 70% de probabilidad de ruptura en el primer ciclo escolar.</div>
+        </div>
+        <div class="divider" style="margin:8px 0;"></div>
+        <div>
+          <div style="font-size:11px;color:var(--ok);font-weight:600;text-transform:uppercase;margin-bottom:4px;">Lo que se gana</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;">Una cadena que puede escalar de forma sostenible. El mercado guatemalteco es la puerta a Centroamérica — vale más hacerlo bien una vez que mal dos veces.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(245,158,11,0.3);">
+    <div style="font-family:'Syne',sans-serif;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Mensaje final para la dirección general</div>
+    <div style="font-size:15px;color:var(--text);line-height:1.9;font-weight:300;">
+      La cadena de suministro no vende — pero define qué se puede vender y cómo. Papelera del Centro tiene una oportunidad genuina en Centroamérica, pero su cadena actual no puede cumplir la promesa que implica esa expansión. <strong>La decisión no es si exportar o no: es en qué condiciones hacerlo.</strong> Exportar hoy es apostar el crecimiento de 12 años sobre una cadena que ni siquiera abastece bien a Jalisco. Exportar en 6 meses, habiendo resuelto los problemas de inventario y contratado al 3PL correcto, convierte una oportunidad frágil en una ventaja competitiva sostenible.
+    </div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);">
+      NEG008 — Administración de la Cadena de Suministro · Universidad Panamericana, Campus Guadalajara · 2026<br>
+      Temas integrados: Diseño de red (S4) · Inventario de ciclo y seguridad (S11, S13) · Variabilidad predecible (S10) · Outsourcing y transporte internacional (S6, S14–15) · Seguros y riesgo (S23)
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ JS -->
+<script>
+// ── BASE DE DATOS ──────────────────────────────────────────────────────────────
+const db = {
+  meses: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+  demanda: [420, 580, 390, 410, 430, 380, 460, 920, 880, 440, 710, 650],
+  inventario: [810, 620, 550, 490, 510, 480, 430, 310, 280, 520, 390, 310],
+  composicion: [28, 34, 20, 18],
+  composicionLabels: ['Alta rotación (óptimo)','Sin rotación >90 días','Seguridad (insuficiente)','Ciclo (sobredimensionado)'],
+  redOpciones: {
+    labels: ['A — Directo','B — Consolidador CDMX','C+D — Cross-dock + 3PL','D — Solo 3PL'],
+    transporte: [2100, 2600, 1800, 2050],
+    inventario: [1400, 1100, 600, 700],
+    ruptura: [2200, 1600, 600, 800],
+  },
+  transporte: {
+    labels: ['Terrestre propio','Aéreo','3PL terrestre consolidado','3PL + cross-dock'],
+    flete: [2100, 4900, 1800, 1500],
+    invTransito: [980, 220, 850, 600],
+    seguro: [180, 310, 140, 120],
+    aduanal: [600, 400, 180, 160],
+    ruptura: [1800, 300, 800, 400],
+  },
+  volumen: {
+    labels: ['$5M','$8M','$12M','$16M','$22M','$28M'],
+    propio: [18.2, 16.4, 13.8, 11.2, 9.8, 8.6],
+    tpl: [11.4, 10.8, 10.1, 9.6, 9.2, 8.9],
+  },
+  radar: {
+    labels: ['Inventarios','Planeación','Red','Transporte Int.','Proveedores','Tecnología','Riesgo','Nivel Servicio','Sostenibilidad'],
+    actual: [2, 3, 2, 4, 5, 4, 2, 5, 5],
+    minExport: [7, 7, 6, 6, 6, 5, 6, 8, 4],
+  },
+  proyeccion: {
+    labels: ['Año 0','Año 1','Año 2','Año 3'],
+    sinExportar: [45.2, 47.1, 49.0, 51.2],
+    conHojaRuta: [45.2, 51.8, 61.4, 74.2],
+    exportarHoy: [45.2, 49.6, 44.8, 42.1],
+  }
+};
+
+// ── TEMA GLOBAL ────────────────────────────────────────────────────────────────
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = '#1e2d45';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+const AMBER = '#f59e0b';
+const BLUE  = '#3b82f6';
+const GREEN = '#10b981';
+const RED   = '#ef4444';
+const MUTED = '#64748b';
+
+// ── CHART 1: Demanda vs Inventario ────────────────────────────────────────────
+new Chart(document.getElementById('chartDemandaInventario'), {
+  type: 'bar',
+  data: {
+    labels: db.meses,
+    datasets: [
+      {
+        label: 'Demanda real (unid.)',
+        data: db.demanda,
+        backgroundColor: 'rgba(59,130,246,0.7)',
+        borderRadius: 4,
+        order: 2
+      },
+      {
+        label: 'Inventario disponible',
+        data: db.inventario,
+        type: 'line',
+        borderColor: AMBER,
+        backgroundColor: 'rgba(245,158,11,0.08)',
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: AMBER,
+        tension: 0.3,
+        fill: true,
+        order: 1
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: '#1e2d45' }, ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// ── CHART 2: Composición inventario ───────────────────────────────────────────
+new Chart(document.getElementById('chartComposicion'), {
+  type: 'doughnut',
+  data: {
+    labels: db.composicionLabels,
+    datasets: [{
+      data: db.composicion,
+      backgroundColor: [GREEN, RED, AMBER, BLUE],
+      borderColor: '#111827',
+      borderWidth: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 }, padding: 8 } }
+    }
+  }
+});
+
+// ── CHART 3: Red comparativa (stacked bar) ────────────────────────────────────
+new Chart(document.getElementById('chartRedComparativa'), {
+  type: 'bar',
+  data: {
+    labels: db.redOpciones.labels,
+    datasets: [
+      { label: 'Transporte', data: db.redOpciones.transporte, backgroundColor: BLUE, borderRadius: { topLeft: 0, topRight: 0 } },
+      { label: 'Inventario tránsito', data: db.redOpciones.inventario, backgroundColor: AMBER },
+      { label: 'Costo ruptura estimado', data: db.redOpciones.ruptura, backgroundColor: RED, borderRadius: { topLeft: 4, topRight: 4 } }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: {
+      x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { stacked: true, grid: { color: '#1e2d45' }, ticks: { font: { size: 10 }, callback: v => '$'+v.toLocaleString() } }
+    }
+  }
+});
+
+// ── CHART 4: Transporte comparativa ───────────────────────────────────────────
+new Chart(document.getElementById('chartTransporte'), {
+  type: 'bar',
+  data: {
+    labels: db.transporte.labels,
+    datasets: [
+      { label: 'Flete', data: db.transporte.flete, backgroundColor: BLUE },
+      { label: 'Inv. tránsito', data: db.transporte.invTransito, backgroundColor: AMBER },
+      { label: 'Seguro', data: db.transporte.seguro, backgroundColor: GREEN },
+      { label: 'Gestión aduanal', data: db.transporte.aduanal, backgroundColor: '#8b5cf6' },
+      { label: 'Costo ruptura', data: db.transporte.ruptura, backgroundColor: RED }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
+    scales: {
+      x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { stacked: true, grid: { color: '#1e2d45' }, ticks: { font: { size: 10 }, callback: v => '$'+v.toLocaleString() } }
+    }
+  }
+});
+
+// ── CHART 5: Costo por volumen ────────────────────────────────────────────────
+new Chart(document.getElementById('chartVolumen'), {
+  type: 'line',
+  data: {
+    labels: db.volumen.labels,
+    datasets: [
+      {
+        label: 'Operación propia (% sobre ventas)',
+        data: db.volumen.propio,
+        borderColor: RED,
+        backgroundColor: 'rgba(239,68,68,0.08)',
+        borderWidth: 2,
+        pointRadius: 5,
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: '3PL especializado (% sobre ventas)',
+        data: db.volumen.tpl,
+        borderColor: GREEN,
+        backgroundColor: 'rgba(16,185,129,0.08)',
+        borderWidth: 2,
+        pointRadius: 5,
+        fill: true,
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: '#1e2d45' }, ticks: { callback: v => v + '%' }, min: 7, max: 20 }
+    }
+  }
+});
+
+// ── CHART 6: Radar ────────────────────────────────────────────────────────────
+new Chart(document.getElementById('chartRadar'), {
+  type: 'radar',
+  data: {
+    labels: db.radar.labels,
+    datasets: [
+      {
+        label: 'Estado actual',
+        data: db.radar.actual,
+        borderColor: RED,
+        backgroundColor: 'rgba(239,68,68,0.15)',
+        borderWidth: 2,
+        pointRadius: 4
+      },
+      {
+        label: 'Mínimo para exportar',
+        data: db.radar.minExport,
+        borderColor: GREEN,
+        backgroundColor: 'rgba(16,185,129,0.08)',
+        borderWidth: 2,
+        borderDash: [5,3],
+        pointRadius: 4
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: {
+      r: {
+        min: 0, max: 10,
+        grid: { color: '#1e2d45' },
+        pointLabels: { font: { size: 11 }, color: '#94a3b8' },
+        ticks: { display: false }
+      }
+    }
+  }
+});
+
+// ── CHART 7: Proyección financiera ────────────────────────────────────────────
+new Chart(document.getElementById('chartProyeccion'), {
+  type: 'line',
+  data: {
+    labels: db.proyeccion.labels,
+    datasets: [
+      {
+        label: 'Con hoja de ruta propuesta',
+        data: db.proyeccion.conHojaRuta,
+        borderColor: GREEN,
+        backgroundColor: 'rgba(16,185,129,0.1)',
+        borderWidth: 2.5,
+        pointRadius: 5,
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Sin exportar (status quo)',
+        data: db.proyeccion.sinExportar,
+        borderColor: AMBER,
+        backgroundColor: 'rgba(245,158,11,0.06)',
+        borderWidth: 2,
+        borderDash: [4,3],
+        pointRadius: 4,
+        fill: true,
+        tension: 0.3
+      },
+      {
+        label: 'Exportar hoy (sin preparación)',
+        data: db.proyeccion.exportarHoy,
+        borderColor: RED,
+        backgroundColor: 'rgba(239,68,68,0.06)',
+        borderWidth: 2,
+        borderDash: [2,3],
+        pointRadius: 4,
+        fill: true,
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: '#1e2d45' }, ticks: { callback: v => '$'+v+'M' } }
+    }
+  }
+});
+
+// ── NAVEGACIÓN ────────────────────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
