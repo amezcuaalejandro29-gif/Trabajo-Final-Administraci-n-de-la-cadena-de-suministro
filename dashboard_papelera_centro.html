@@ -73,7 +73,7 @@
   .tab-btn {
     background: none;
     border: none;
-    color: var(--muted);
+    color: #334155;
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     font-weight: 500;
@@ -85,13 +85,13 @@
     white-space: nowrap;
   }
 
-  .tab-btn:hover { color: rgba(255,255,255,0.8); }
+  .tab-btn:hover { color: #475569; }
   .tab-btn.active { color: #ffffff; border-bottom-color: #ffffff; }
 
   .nav-badge {
     margin-left: auto;
     font-size: 11px;
-    color: var(--muted);
+    color: #64748b;
     white-space: nowrap;
   }
 
@@ -121,10 +121,10 @@
   }
 
   .section-sub {
-    color: var(--muted);
+    color: #64748b;
     font-size: 13px;
     margin-bottom: 2rem;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   h3 {
@@ -132,7 +132,7 @@
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 12px;
-    color: rgba(255,255,255,0.8);
+    color: #475569;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -153,7 +153,7 @@
   }
 
   .card-dark {
-    background: #eef2f7;
+    background: #f1f5f9;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 20px;
@@ -174,8 +174,8 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: var(--muted);
-    font-weight: 500;
+    color: #64748b;
+    font-weight: 600;
   }
 
   .kpi-value {
@@ -232,6 +232,7 @@
     font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 13px;
+    color: #0f172a;
   }
 
   .dot {
@@ -248,7 +249,7 @@
 
   .semaforo-desc {
     font-size: 12px;
-    color: var(--muted);
+    color: #475569;
     line-height: 1.5;
   }
 
@@ -270,7 +271,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: rgba(255,255,255,0.8);
+    color: #475569;
   }
 
   .progress-bar {
@@ -298,16 +299,17 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--muted);
+    color: #64748b;
     padding: 8px 12px;
     border-bottom: 1px solid var(--border);
-    font-weight: 500;
+    font-weight: 600;
+    background: #f8fafc;
   }
 
   td {
     padding: 10px 12px;
     border-bottom: 1px solid rgba(209,219,230,0.8);
-    color: rgba(255,255,255,0.8);
+    color: #475569;
     vertical-align: middle;
   }
 
@@ -376,7 +378,7 @@
 
   .hero-question {
     font-size: 16px;
-    color: rgba(255,255,255,0.8);
+    color: #475569;
     font-weight: 300;
     font-style: italic;
     margin-bottom: 32px;
@@ -394,19 +396,21 @@
     flex-direction: column;
     gap: 2px;
   }
+  .hero .meta-label { color: rgba(255,255,255,0.6); }
+  .hero .meta-value { color: #ffffff; }
 
   .meta-label {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: var(--muted);
+    color: #94a3b8;
   }
 
   .meta-value {
     font-family: 'Syne', sans-serif;
     font-size: 15px;
     font-weight: 700;
-    color: var(--text);
+    color: #0f172a;
   }
 
   /* VERDICT */
@@ -435,7 +439,7 @@
 
   .verdict-text {
     font-size: 13px;
-    color: rgba(255,255,255,0.8);
+    color: #475569;
     line-height: 1.7;
   }
 
@@ -448,7 +452,7 @@
   }
 
   .tradeoff-col {
-    background: #eef2f7;
+    background: #f1f5f9;
     border-radius: 8px;
     padding: 14px;
   }
@@ -463,7 +467,7 @@
 
   .tradeoff-item {
     font-size: 12px;
-    color: var(--muted);
+    color: #475569;
     padding: 4px 0;
     border-bottom: 1px solid rgba(255,255,255,0.04);
     display: flex;
@@ -517,32 +521,39 @@
 
   <div class="hero">
     <div class="hero-tag" style="color:#ffffff;border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);">Caso de Estudio · SCM</div>
-    <div class="hero-title" style="color:#ffffff;">Papelera del Centro<br><span>¿Lista para exportar?</span></div>
-    <div class="hero-question" style="color:rgba(255,255,255,0.82);">
+    <div class="hero-title">Papelera del Centro<br><span>¿Lista para exportar?</span></div>
+    <div class="hero-question">
       Un distribuidor guatemalteco toca la puerta. La dirección general quiere decir que sí.<br>
       Pero, ¿puede la cadena de suministro actual soportar ese crecimiento?
     </div>
     <div class="hero-meta">
       <div class="hero-meta-item">
-        <span class="meta-label" style="color:rgba(255,255,255,0.6);">Giro</span>
-        <span class="meta-value" style="color:#ffffff;">Comercializadora papelería</span>
+        <span class="meta-label">Giro</span>
+        <span class="meta-value">Comercializadora papelería</span>
       </div>
       <div class="hero-meta-item">
-        <span class="meta-label" style="color:rgba(255,255,255,0.6);">Sede</span>
-        <span class="meta-value" style="color:#ffffff;">Guadalajara, México</span>
+        <span class="meta-label">Sede</span>
+        <span class="meta-value">Guadalajara, México</span>
       </div>
       <div class="hero-meta-item">
-        <span class="meta-label" style="color:rgba(255,255,255,0.6);">Mercado objetivo</span>
-        <span class="meta-value" style="color:#ffffff;">Guatemala & Costa Rica</span>
+        <span class="meta-label">Mercado objetivo</span>
+        <span class="meta-value">Guatemala & Costa Rica</span>
       </div>
       <div class="hero-meta-item">
-        <span class="meta-label" style="color:rgba(255,255,255,0.6);">Facturación anual</span>
-        <span class="meta-value" style="color:#ffffff;">$45.2 M MXN</span>
+        <span class="meta-label">Facturación anual</span>
+        <span class="meta-value">$45.2 M MXN</span>
       </div>
       <div class="hero-meta-item">
-        <span class="meta-label" style="color:rgba(255,255,255,0.6);">Años de operación</span>
-        <span class="meta-value" style="color:#ffffff;">12 años</span>
+        <span class="meta-label">Años de operación</span>
+        <span class="meta-value">12 años</span>
       </div>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:16px 20px;margin-top:24px;">
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.6);font-weight:600;margin-bottom:6px;">Nota del autor · Implicación con el caso</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.7;">
+      Este es un <strong style="color:#ffffff;">caso ficticio construido con características verosímiles del sector papelero en México.</strong> Lo elegí porque me encuentro en proceso de exploración de productos para emprender, y el comercio de papelería y material de oficina es uno de mis segmentos de interés activo. Analizar una comercializadora de este tipo me permitió aplicar los conceptos del curso a un contexto que estoy evaluando con criterio real, no solo académico.
     </div>
   </div>
 
@@ -1078,7 +1089,7 @@
   <div class="hero" style="margin-bottom:20px;">
     <div class="hero-tag" style="color:#ffffff;border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);">Veredicto ejecutivo</div>
     <div class="hero-title" style="color:#ffffff;" style="font-size:30px;">No exportar todavía — <span>pero prepararse ahora.</span></div>
-    <div class="hero-question" style="color:rgba(255,255,255,0.82);" style="font-size:14px;">
+    <div class="hero-question" style="font-size:14px;">
       La oportunidad con OfficeGT es real y no debe descartarse. El problema es que exportar hoy, con la cadena en su estado actual, garantiza el fracaso de la relación en el primer ciclo de alta demanda. La recomendación es negociar un inicio diferido de 6 meses con el socio guatemalteco y usar ese tiempo para resolver los problemas estructurales que harían inviable cualquier expansión.
     </div>
   </div>
@@ -1114,8 +1125,16 @@
         </tr>
         <tr>
           <td style="color:#1e40af;font-weight:700;">05</td>
-          <td class="td-main">Negociar volumen con proveedores chinos para reducir lead time a 35 días</td>
-          <td>Reduce riesgo de ruptura</td>
+          <td class="td-main">
+            Negociar con proveedores chinos para reducir lead time de 60 a 35 días
+            <div style="font-size:11px;color:#64748b;margin-top:4px;line-height:1.6;">
+              <strong style="color:#1e40af;">3 palancas:</strong>
+              (1) <strong>Cambio de puerto de salida</strong> — de Shanghai a Yantian (Shenzhen), más cercano a proveedores del sur de China, reduce tránsito marítimo ~8 días;
+              (2) <strong>VMI (Vendor Managed Inventory)</strong> — el proveedor gestiona un inventario mínimo pre-posicionado para PDC, eliminando el tiempo de producción bajo pedido;
+              (3) <strong>Transporte multimodal</strong> — combinar barco hasta Manzanillo + ferrocarril a Guadalajara en lugar de camión, reduciendo variabilidad del tramo terrestre.
+            </div>
+          </td>
+          <td>Lead time 60→35 días</td>
           <td><span class="badge badge-blue">Mes 3–4</span></td>
         </tr>
       </table>
@@ -1195,6 +1214,31 @@
     <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);">
       NEG008 — Administración de la Cadena de Suministro · Universidad Panamericana, Campus Guadalajara · 2026<br>
       Temas integrados: Diseño de red (S4) · Inventario de ciclo y seguridad (S11, S13) · Variabilidad predecible (S10) · Outsourcing y transporte internacional (S6, S14–15) · Seguros y riesgo (S23)
+    </div>
+  </div>
+
+
+  <div class="card" style="border-left:4px solid #059669;margin-top:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:36px;height:36px;background:rgba(5,150,105,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">✓</div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0f172a;">Retroalimentación del profesor</div>
+        <div style="font-size:11px;color:#64748b;">Dr. Luis Armando Vásquez-Ruiz · 26 mayo 2026</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Punto 1 — Implicación con el caso ✓ Atendido</div>
+        <div style="font-size:12px;color:#334155;line-height:1.6;">Se agregó nota explicativa en la sección Contexto indicando que el caso es ficticio y justificando la elección con base en el interés personal del autor en el sector papelero como posible producto de emprendimiento.</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Punto 2 — Justificación del lead time 60→35 días ✓ Atendido</div>
+        <div style="font-size:12px;color:#334155;line-height:1.6;">Se expandió la acción #05 del plan con tres palancas concretas: (1) cambio de puerto de salida Shanghai → Yantian, (2) VMI con el proveedor para eliminar tiempo de producción bajo pedido, y (3) transporte multimodal marítimo + ferrocarril para reducir variabilidad del tramo terrestre.</div>
+      </div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:600;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Punto 3 — Recomendación final · Sin cambios requeridos</div>
+        <div style="font-size:12px;color:#334155;line-height:1.6;">El profesor confirmó que el análisis es completo y la recomendación ejecutiva final es adecuada. Se mantiene sin modificaciones.</div>
+      </div>
     </div>
   </div>
 
