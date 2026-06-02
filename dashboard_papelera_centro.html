@@ -53,13 +53,12 @@
     font-family: 'Syne', sans-serif;
     font-weight: 800;
     font-size: 15px;
-    color: #ffffff;
+    color: #1e40af;
     letter-spacing: -0.3px;
     white-space: nowrap;
   }
 
-  .nav-brand { color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: -0.3px; white-space: nowrap; }
-  .nav-brand span { color: var(--text); }
+  .nav-brand span { color: #475569; font-weight: 400; }
 
   .nav-tabs {
     display: flex;
@@ -85,13 +84,13 @@
     white-space: nowrap;
   }
 
-  .tab-btn:hover { color: #475569; }
-  .tab-btn.active { color: #ffffff; border-bottom-color: #ffffff; }
+  .tab-btn:hover { color: #2563eb; }
+  .tab-btn.active { color: #1e40af; border-bottom-color: #1e40af; font-weight: 700; }
 
   .nav-badge {
     margin-left: auto;
     font-size: 11px;
-    color: #64748b;
+    color: #94a3b8;
     white-space: nowrap;
   }
 
@@ -118,6 +117,7 @@
     font-weight: 800;
     margin-bottom: 4px;
     letter-spacing: -0.5px;
+    color: #0f172a;
   }
 
   .section-sub {
@@ -146,8 +146,8 @@
 
   /* CARDS */
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
     border-radius: 12px;
     padding: 20px;
   }
@@ -161,8 +161,8 @@
 
   /* KPI CARDS */
   .kpi {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -213,8 +213,8 @@
   }
 
   .semaforo-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
     border-radius: 10px;
     padding: 16px;
     display: flex;
@@ -372,6 +372,7 @@
     line-height: 1.1;
     letter-spacing: -1px;
     margin-bottom: 16px;
+    color: #ffffff;
   }
 
   .hero-title span { color: #ffffff; }
@@ -405,6 +406,8 @@
     letter-spacing: 0.8px;
     color: #94a3b8;
   }
+  .hero .meta-label { color: rgba(255,255,255,0.75); }
+  .hero .meta-value { color: #ffffff; font-weight: 700; }
 
   .meta-value {
     font-family: 'Syne', sans-serif;
@@ -498,6 +501,14 @@
     .hero-title { font-size: 28px; }
     .tradeoff { grid-template-columns: 1fr; }
   }
+
+  .hero .hero-question {
+    color: #ffffff !important;
+    font-weight: 400;
+  }
+  .hero p, .hero div {
+    color: inherit;
+  }
 </style>
 </head>
 <body>
@@ -520,7 +531,7 @@
 <section id="portada" class="section active">
 
   <div class="hero">
-    <div class="hero-tag" style="color:#ffffff;border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);">Caso de Estudio · SCM</div>
+    <div class="hero-tag" style="color:#ffffff;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);font-weight:700;">Caso de Estudio · SCM</div>
     <div class="hero-title">Papelera del Centro<br><span>¿Lista para exportar?</span></div>
     <div class="hero-question">
       Un distribuidor guatemalteco toca la puerta. La dirección general quiere decir que sí.<br>
@@ -550,9 +561,9 @@
     </div>
   </div>
 
-  <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:16px 20px;margin-top:24px;">
-    <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.6);font-weight:600;margin-bottom:6px;">Nota del autor · Implicación con el caso</div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.7;">
+  <div style="background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.35);border-radius:10px;padding:16px 20px;margin-top:24px;">
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.9);font-weight:700;margin-bottom:6px;">Nota del autor · Implicación con el caso</div>
+    <div style="font-size:13px;color:#ffffff;line-height:1.7;font-weight:400;">
       Este es un <strong style="color:#ffffff;">caso ficticio construido con características verosímiles del sector papelero en México.</strong> Lo elegí porque me encuentro en proceso de exploración de productos para emprender, y el comercio de papelería y material de oficina es uno de mis segmentos de interés activo. Analizar una comercializadora de este tipo me permitió aplicar los conceptos del curso a un contexto que estoy evaluando con criterio real, no solo académico.
     </div>
   </div>
@@ -1087,9 +1098,9 @@
   <div class="section-sub">Síntesis del diagnóstico y hoja de ruta para la dirección general de Papelera del Centro</div>
 
   <div class="hero" style="margin-bottom:20px;">
-    <div class="hero-tag" style="color:#ffffff;border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);">Veredicto ejecutivo</div>
+    <div class="hero-tag" style="color:#ffffff;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);font-weight:700;">Veredicto ejecutivo</div>
     <div class="hero-title" style="color:#ffffff;" style="font-size:30px;">No exportar todavía — <span>pero prepararse ahora.</span></div>
-    <div class="hero-question" style="font-size:14px;">
+    <div class="hero-question" style="font-size:14px;color:#ffffff;font-weight:400;">
       La oportunidad con OfficeGT es real y no debe descartarse. El problema es que exportar hoy, con la cadena en su estado actual, garantiza el fracaso de la relación en el primer ciclo de alta demanda. La recomendación es negociar un inicio diferido de 6 meses con el socio guatemalteco y usar ese tiempo para resolver los problemas estructurales que harían inviable cualquier expansión.
     </div>
   </div>
@@ -1211,36 +1222,8 @@
     <div style="font-size:15px;color:var(--text);line-height:1.9;font-weight:300;">
       La cadena de suministro no vende — pero define qué se puede vender y cómo. Papelera del Centro tiene una oportunidad genuina en Centroamérica, pero su cadena actual no puede cumplir la promesa que implica esa expansión. <strong>La decisión no es si exportar o no: es en qué condiciones hacerlo.</strong> Exportar hoy es apostar el crecimiento de 12 años sobre una cadena que ni siquiera abastece bien a Jalisco. Exportar en 6 meses, habiendo resuelto los problemas de inventario y contratado al 3PL correcto, convierte una oportunidad frágil en una ventaja competitiva sostenible.
     </div>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);">
-      NEG008 — Administración de la Cadena de Suministro · Universidad Panamericana, Campus Guadalajara · 2026<br>
-      Temas integrados: Diseño de red (S4) · Inventario de ciclo y seguridad (S11, S13) · Variabilidad predecible (S10) · Outsourcing y transporte internacional (S6, S14–15) · Seguros y riesgo (S23)
-    </div>
   </div>
 
-
-  <div class="card" style="border-left:4px solid #059669;margin-top:16px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-      <div style="width:36px;height:36px;background:rgba(5,150,105,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">✓</div>
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0f172a;">Retroalimentación del profesor</div>
-        <div style="font-size:11px;color:#64748b;">Dr. Luis Armando Vásquez-Ruiz · 26 mayo 2026</div>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
-        <div style="font-size:11px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Punto 1 — Implicación con el caso ✓ Atendido</div>
-        <div style="font-size:12px;color:#334155;line-height:1.6;">Se agregó nota explicativa en la sección Contexto indicando que el caso es ficticio y justificando la elección con base en el interés personal del autor en el sector papelero como posible producto de emprendimiento.</div>
-      </div>
-      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;">
-        <div style="font-size:11px;font-weight:600;color:#059669;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Punto 2 — Justificación del lead time 60→35 días ✓ Atendido</div>
-        <div style="font-size:12px;color:#334155;line-height:1.6;">Se expandió la acción #05 del plan con tres palancas concretas: (1) cambio de puerto de salida Shanghai → Yantian, (2) VMI con el proveedor para eliminar tiempo de producción bajo pedido, y (3) transporte multimodal marítimo + ferrocarril para reducir variabilidad del tramo terrestre.</div>
-      </div>
-      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;">
-        <div style="font-size:11px;font-weight:600;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Punto 3 — Recomendación final · Sin cambios requeridos</div>
-        <div style="font-size:12px;color:#334155;line-height:1.6;">El profesor confirmó que el análisis es completo y la recomendación ejecutiva final es adecuada. Se mantiene sin modificaciones.</div>
-      </div>
-    </div>
-  </div>
 
 </section>
 
